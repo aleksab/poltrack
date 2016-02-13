@@ -4,10 +4,8 @@ import logging
 import os.path
 import sys
 import multiprocessing
+import json
  
-from gensim.corpora import  WikiCorpus
-from gensim.models import Word2Vec
-from gensim.models.word2vec import LineSentence
  
  
 if __name__ == '__main__':
@@ -25,11 +23,15 @@ if __name__ == '__main__':
         sys.exit(1)
     inp, outp = sys.argv[1:3]
  
-    model = Word2Vec(LineSentence(inp), size=400, window=5, min_count=5, workers=multiprocessing.cpu_count())
-    logger.info("Vectors created")
+    data = []
+    with open(inp) as f:
+	for line in f:
+	   if line.strip():
+	       data.append(json.loads(line))
+    logger.info("loaded %s lines", len(data))
 
-    # trim unneeded model memory = use (much) less RAM
-    model.init_sims(replace=True)
- 
-    model.save(outp)
-
+    with open(outp, 'w') as f:
+	for obj in data:
+    	    f.write(obj["content"].replace("\n","").encode('utf8'))
+	    f.write('\n')
+    
