@@ -3,6 +3,8 @@
 from __future__ import division
 import codecs,sys,re,os
 
+# Processing XML output of Stanford POS tagger, transforming it into sequences of lemmas with POS tags.
+
 stopwords = set([w.strip() for w in open('stopwords_en.txt','r').readlines()])
 
 for line in sys.stdin:

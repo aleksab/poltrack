@@ -1,6 +1,8 @@
 #!/bin/bash
 COUNTER=1
 
+# Takes tab-separated text as input, queries Stanford POS-tagger and outputs tagged XML to standard output
+
 while IFS=$'\t' read -r -a myArray
 do
 #echo $COUNTER

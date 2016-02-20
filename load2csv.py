@@ -3,6 +3,9 @@
 from __future__ import division
 import codecs,sys,re,json
 
+# Loading json, filtering noise, produce tab-delimited text on standard output
+
+
 stopwords = set([w.strip() for w in open('stopwords_en.txt','r').readlines()])
 
 for line in sys.stdin:
