@@ -18,3 +18,15 @@ echo "Downloading Norwegian Newspaper corpus"
 #unzip norsk_aviskorpus.zip
 #cd 2/
 #cat *.tar.gz | tar -zxf - -i
+
+echo "Downloading BNC corpus"
+#mkdir data/bnc
+#cd data/bnc
+#wget http://ltr.uio.no/~andreku/static/bnc.tar.gz
+#tar zxf bnc.tar.gz
+
+echo "Downloading AFinn lexicon"
+cd data
+wget http://www2.imm.dtu.dk/pubdb/views/edoc_download.php/6010/zip/imm6010.zip
+unzip imm6010.zip
+mv AFINN afinn

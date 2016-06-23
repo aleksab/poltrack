@@ -11,6 +11,8 @@ from nltk.corpus import stopwords
 from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.corpus import wordnet
 from nltk.tag.perceptron import PerceptronTagger
+from os import listdir
+from os.path import isfile, join
 
 tagger = PerceptronTagger()
 cachedStopWords = stopwords.words("english")
@@ -77,25 +79,29 @@ if __name__ == '__main__':
     if len(sys.argv) < 3:
         print globals()['__doc__'] % locals()
         sys.exit(1)
-    inp, outp = sys.argv[1:3]
+    inpath, outpath = sys.argv[1:3]
 
-    output = open(outp, 'w')
-    length = num_lines = sum(1 for line in open(inp))
-    logger.info("Processing %s that has %i lines", inp, length)
-    with open(inp) as f:
-        counter = 0.0
-        for line in f:
-            obj = json.loads(line)
-            obj["content"] = lemmatize(obj["content"])
-            obj["title"] = lemmatize(obj["title"])
-            output.write(json.dumps(obj, ensure_ascii=False).encode("utf8"))
-            output.write('\n')
-            counter += 1.0
+    files = [f for f in listdir(inpath) if isfile(join(inpath, f))]
+    for file in files:
 
-            if ((counter % 10) == 0):
-                sys.stdout.write("Processed : %.2f   \r" % (100 * (counter / length)))
-                sys.stdout.flush()
+        name = outpath + file + ".prepared"
+        output = open(name, 'w')
+        length = num_lines = sum(1 for line in open(inpath + file))
+        logger.info("Processing %s that has %i lines", inpath + file, length)
+        with open(inpath + file) as f:
+            counter = 0.0
+            for line in f:
+                obj = json.loads(line)
+                obj["content"] = lemmatize(obj["content"])
+                obj["title"] = lemmatize(obj["title"])
+                output.write(json.dumps(obj, ensure_ascii=False).encode("utf8"))
+                output.write('\n')
+                counter += 1.0
 
-    output.close()
+                if ((counter % 10) == 0):
+                    sys.stdout.write("Processed : %.2f   \r" % (100 * (counter / length)))
+                    sys.stdout.flush()
+
+        output.close()
 
     logger.info("Done")
