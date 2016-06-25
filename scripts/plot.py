@@ -10,6 +10,11 @@ import json, codecs, sys
 import numpy as np
 
 data = json.loads(codecs.open(sys.argv[1],'r','utf-8').read())
+for key in data:
+    print key
+    
+exit()
+
 
 name = sys.argv[2].decode('utf-8')
 
