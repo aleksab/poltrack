@@ -32,7 +32,7 @@ if __name__ == '__main__':
         logger.info("Processing day %s" % day)
 
         filename = "signalmedia-1m.split.y2015.m9.d%s.entities" % (day)
-        fileentities = dict(map(lambda (v,k): (k, int(v)), [ line.split('\t') for line in open(inpath + filename) ]))
+        fileentities = dict(map(lambda (v,k): (k.lower(), int(v)), [ line.split('\t') for line in open(inpath + filename) ]))
 
         logger.info("Found %d entities in %s", len(fileentities), filename)
         entities = combine_dicts(entities, fileentities)
@@ -40,6 +40,13 @@ if __name__ == '__main__':
     logger.info("Collected %d entities", len(entities))
 
     sorted_entities = sorted(entities.items(), key=operator.itemgetter(1), reverse=True)
-    print sorted_entities[:25]
+    first = sorted_entities[:1000]
+
+    logger.info("First entry has %d hits" % first[0][1])
+    logger.info("Last entry has %d hits" % first[len(first)-1][1])
+
+    with open('entities.lst', 'w') as f:
+        for item in first:
+            f.write("%d\t%s" % (item[1], item[0]))
 
     logger.info("Done")

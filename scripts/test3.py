@@ -4,11 +4,24 @@ from numpy import ones
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
-base_model = gensim.models.Word2Vec.load(sys.argv[1])
-model = gensim.models.Word2Vec.load(sys.argv[2])
+afinn = dict(map(lambda (k,v): (k,int(v)), [ line.split('\t') for line in open(sys.argv[1]) ]))
 
-logging.info("Similiarity before: %s" % base_model.similarity('company', 'china'));
-logging.info("Similiarity after: %s" % model.similarity('company', 'china'));
+positive = [key for key, score in afinn.items() if score > 0]
+negative = [key for key, score in afinn.items() if score < 0]
+ambigous = [key for key, score in afinn.items() if score == 0]
 
-logging.info("Similiarity after: %s" % base_model.most_similar('china'));
-logging.info("Similiarity after: %s" % model.most_similar('china'));
+print 'positive words:', len(positive)
+print 'negative words:', len(negative)
+print 'ambigous words:', len(ambigous)
+
+with open('positive.lst', 'w') as f:
+    for item in positive:
+        f.write("%s\n" % item)
+
+with open('negative.lst', 'w') as f:
+    for item in negative:
+        f.write("%s\n" % item)
+
+with open('ambig.lst', 'w') as f:
+    for item in ambigous:
+        f.write("%s\n" % item)

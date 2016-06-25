@@ -13,6 +13,9 @@ print 'negative words:', len(negative)
 
 words = set()
 words.add("turnbull")
+words.add("china")
+words.add("company")
+words.add("obama")
 
 models = {}
 for m in sys.argv[2:]:
