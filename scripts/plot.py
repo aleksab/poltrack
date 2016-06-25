@@ -6,15 +6,17 @@ Plotting expression of evaluative features. Takes as an input a json file with d
 """
 
 import matplotlib.pyplot as plt
-import json, codecs, sys
+import json, codecs, sys, gzip
 import numpy as np
 
-data = json.loads(codecs.open(sys.argv[1],'r','utf-8').read())
-for key in data:
-    print key
-    
-exit()
+datafile = gzip.open(sys.argv[1],'r')
+contents = datafile.read()
+datafile.close()
 
+contents = contents.decode('utf-8')
+
+
+data = json.loads(contents)
 
 name = sys.argv[2].decode('utf-8')
 
@@ -26,24 +28,31 @@ adjectives = []
 expression = []
 polarity = []
 for i in entity['positive']:
-    adjectives.append(i.split('_')[0])
-    value = entity['positive'][i]
-    expression.append(abs(value))
-    if value < 0:
-	polarity.append(1)
-    else:
-	polarity.append(0)
-
+    try:
+	value = entity['positive'][i][0]
+	adjectives.append(i.split('_')[0])
+	expression.append(abs(value))
+	if value < 0:
+	    polarity.append(1)
+	else:
+	    polarity.append(0)
+    except:
+	continue
+	
 for i in entity['negative']:
-    adjectives.append(i.split('_')[0])
-    value = entity['negative'][i]
-    expression.append(abs(value))
-    if value > 0:
-	polarity.append(1)
-    else:
-	polarity.append(0)
+    try:
+	value = entity['negative'][i][0]
+	adjectives.append(i.split('_')[0])
+	expression.append(abs(value))
+	if value > 0:
+	    polarity.append(1)
+	else:
+	    polarity.append(0)
+    except:
+	continue
 
 y_pos = np.arange(len(adjectives))
+
 barlist = plt.barh(y_pos, expression, align='center', alpha=0.4, height=height)
 
 for bar in xrange(len(polarity)):
@@ -53,7 +62,7 @@ for bar in xrange(len(polarity)):
 
 plt.yticks(y_pos, adjectives)
 
-
+plt.ylabel('Features')
 plt.xlabel('Expression')
 plt.title(name)
 
