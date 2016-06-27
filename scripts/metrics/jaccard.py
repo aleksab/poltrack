@@ -6,9 +6,9 @@ from itertools import combinations
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
-afinn = dict(map(lambda (k,v): (k,int(v)), [ line.split('\t') for line in open(sys.argv[1]) ]))
-positive = [key for key, score in afinn.items() if score > 0]
-negative = [key for key, score in afinn.items() if score < 0]
+#afinn = dict(map(lambda (k,v): (k,int(v)), [ line.split('\t') for line in open(sys.argv[1]) ]))
+#positive = [key for key, score in afinn.items() if score > 0]
+#negative = [key for key, score in afinn.items() if score < 0]
 
 def jaccard(set_1, set_2):
     n = len(set_1.intersection(set_2))
@@ -33,8 +33,8 @@ def jaccard_f(words,models,row=10):
             print 'associates in', pair[0], ' '.join(associations[pair[0]]), '\n', 'associates in', pair[1], ' '.join(associations[pair[1]])
             print '~~~~~~'
 
-            print sum(map(lambda word: afinn.get(word, 0), associations[pair[0]]))
-            print sum(map(lambda word: afinn.get(word, 0), associations[pair[1]]))
+            #print sum(map(lambda word: afinn.get(word, 0), associations[pair[0]]))
+            #print sum(map(lambda word: afinn.get(word, 0), associations[pair[1]]))
         print '======================='
     return distances
 
@@ -47,11 +47,11 @@ if __name__ == '__main__':
 	#if not word.startswith('#'):
 	#    words.add(word.strip())
 
-    row = 100 # How many nearest neighbors to take into account from vector model
+    row = 25 # How many nearest neighbors to take into account from vector model
     models = {}
     for m in sys.argv[2:]:
-	models[m] = gensim.models.Word2Vec.load(m)
-	models[m].init_sims(replace=True) 
+	    models[m] = gensim.models.Word2Vec.load(m)
+	    models[m].init_sims(replace=True)
 	
     print >> sys.stderr, 'Total words to process:', len(words)
     print >> sys.stderr, "Total models:", len(models)

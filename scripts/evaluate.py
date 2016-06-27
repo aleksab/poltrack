@@ -13,15 +13,18 @@ negative = set()
 positive = set()
 ambiguous = set()
 
-for line in codecs.open('negative.lst','r','utf-8'):
-    res = line.strip()
-    negative.add(res)
-for line in codecs.open('positive.lst','r','utf-8'):
-    res = line.strip()
-    positive.add(res)
+for line in codecs.open('sorted_negative_edited.lst','r','utf-8'):
+    res = line.strip().split('\t')
+    (freq, word) = res
+    negative.add(word)
+for line in codecs.open('sorted_positive_edited.lst','r','utf-8'):
+    res = line.strip().split('\t')
+    (freq, word) = res
+    positive.add(word)
 for line in codecs.open('ambig.lst','r','utf-8'):
-    res = line.strip()
-    ambiguous.add(res)
+    res = line.strip().split('\t')
+    (freq, word) = res
+    ambiguous.add(word)
     
 print >> sys.stderr, "Positive adjectives:", len(positive)
 print >> sys.stderr, "Negative adjectives:", len(negative)
@@ -52,10 +55,10 @@ for group in groups:
     print >> sys.stderr, model
     for dataset in ("positive","negative","ambiguous"):
         for person in persons:
-            if not dataset in persons[person]:
-                persons[person][dataset] = {}
-
             if person in model.vocab:
+                if not dataset in persons[person]:
+                    persons[person][dataset] = {}
+
                 for el in eval(dataset):
                     if not el in persons[person][dataset]:
                         persons[person][dataset][el] = []
@@ -63,7 +66,8 @@ for group in groups:
                     if el in model.vocab:
                         distance = model.similarity(person,el)
                         persons[person][dataset][el].append(distance)
-
+            else:
+                print "Person not in model", person
     print "Done"
 
 
